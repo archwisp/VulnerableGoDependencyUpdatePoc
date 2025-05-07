@@ -25,7 +25,7 @@ class GoModFile:
         for line in self.file_contents:
             for vuln in vulns:
                 if vuln["lib"] in line and vuln["vuln_version"] in line:
-                    print("Found match for %s on line number %s" % (vuln["lib"], line_number))
+                    # print("Found match for %s on line number %s" % (vuln["lib"], line_number))
                     print("Updating version from %s to %s" % (vuln["vuln_version"], vuln["fix_version"]))
                     self.file_contents[line_number] = line.replace(vuln["vuln_version"], vuln["fix_version"])
                     updated += 1
