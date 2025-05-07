@@ -1,7 +1,7 @@
 #vim: ts=4:sw=4:et
 class GoModFile:
     file_name = "" 
-    file_contents = ""
+    file_contents = []
     vulns = []
 
     def __init__(self, file_name):
@@ -27,7 +27,7 @@ class GoModFile:
                 if vuln["lib"] in line and vuln["vuln_version"] in line:
                     print("Found match for %s on line number %s" % (vuln["lib"], line_number))
                     print("Updating version from %s to %s" % (vuln["vuln_version"], vuln["fix_version"]))
-                    line.replace(vuln["vuln_version"], vuln["fix_version"])
+                    self.file_contents[line_number] = line.replace(vuln["vuln_version"], vuln["fix_version"])
                     updated += 1
 
             line_number += 1
