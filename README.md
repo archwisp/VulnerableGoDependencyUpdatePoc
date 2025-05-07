@@ -1,20 +1,22 @@
-# Vulnerable Dependency Update Notes
+# Vulnerable Go Dependency Update PoC
 
 The goals of this project are:
 
-- Automatically scan a codebase for vulnerable dependencies
+- Automatically scan a Go codebase for vulnerable dependencies
+- Test deploy the project in a container and verify that it runs and unit tests pass
 - Automatically advance the version number of vulnerable dependencies in the project manifest
-- Test deploy the project in a container and verify that unit tests succeed
+- Re-deploy the project in a container with the new dependency version and verify that it still runs and unit tests still pass
 - If the tests pass, commit the dependency update and trigger a pull request
 - If the tests fail, create a ticket containing failed test outputs
 
-
 ## Build the container
+
 ```
 docker build -t archwisp/vulnerable-dependency-update-poc .
 ```
 
 ## Run the program to make sure it works
+
 ```
 docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc go run .
 warning: both GOPATH and GOROOT are the same directory (/usr/local/go); see https://go.dev/wiki/InstallTroubleshooting
@@ -23,6 +25,7 @@ Hello, Bob. Welcome!
 ```
 
 ## Run unit tests
+
 ```
 docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc go test
 warning: both GOPATH and GOROOT are the same directory (/usr/local/go); see https://go.dev/wiki/InstallTroubleshooting
@@ -32,6 +35,7 @@ ok      Main    0.002s
 ```
 
 ## Run the vuln check
+
 ```
 docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc /usr/local/go/bin/linux_arm64/govulncheck .
 === Symbol Results ===
@@ -53,6 +57,48 @@ Use '-show verbose' for more details.
 ```
 
 ## Create the vulncheck logfile
+
 ```
 docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc /usr/local/go/bin/linux_arm64/govulncheck . > src/vulncheck.log
+```
+
+## Patch the version
+
+```
+python3 scripts/update-vuln-dependencies.py src/go.mod src/vulncheck.log
+Processing module file: src/go.mod
+Processing vulncheck file: src/vulncheck.log
+Found Vulnerability #1: GO-2021-0113 on line 2
+Vuln is in golang.org/x/text@v0.3.5 on line 6
+Fix is in golang.org/x/text@v0.3.7 on line 7
+[{"lib": "golang.org/x/text", "vuln_version": "v0.3.5", "fix_version": "v0.3.7"}]
+Found match for golang.org/x/text on line number 6
+Updating version from v0.3.5 to v0.3.7
+```
+
+## Run the the dependecy update
+
+```
+docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc go get Main
+warning: both GOPATH and GOROOT are the same directory (/usr/local/go); see https://go.dev/wiki/InstallTroubleshooting
+go: downloading golang.org/x/text v0.3.7
+```
+
+## Make sure the program still runs
+
+```
+docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc go run .
+warning: both GOPATH and GOROOT are the same directory (/usr/local/go); see https://go.dev/wiki/InstallTroubleshooting
+go: downloading golang.org/x/text v0.3.7
+Hello, Bob. Welcome!
+```
+
+## Make sure unit tests still pass
+
+```
+docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc go test
+warning: both GOPATH and GOROOT are the same directory (/usr/local/go); see https://go.dev/wiki/InstallTroubleshooting
+go: downloading golang.org/x/text v0.3.7
+PASS
+ok      Main    0.002s
 ```
