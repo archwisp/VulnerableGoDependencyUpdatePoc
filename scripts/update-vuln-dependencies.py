@@ -9,9 +9,6 @@ if len(sys.argv) != 3:
 mod_file_name = sys.argv[1]
 vulncheck_file_name = sys.argv[2]
 
-print("Processing module file: %s" % mod_file_name)
-print("Processing vulncheck file: %s" % vulncheck_file_name)
-
 if not os.path.exists(mod_file_name):
     print("Error: Module file does not exist. Quitting.")
     sys.exit(0)
@@ -20,9 +17,11 @@ if not os.path.exists(vulncheck_file_name):
     print("Error: Vulncheck file does not exist. Quitting.")
     sys.exit(0)
 
+print("Processing vulncheck file: %s" % vulncheck_file_name)
 vulncheck = vulncheck_file.VulncheckFile(vulncheck_file_name)
 vulns = vulncheck.parse_vulns()
 
+print("Processing module file: %s" % mod_file_name)
 mod = go_mod_file.GoModFile(mod_file_name)
 mod.update_vulns(vulns)
 
