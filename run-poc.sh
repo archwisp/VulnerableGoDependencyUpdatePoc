@@ -28,6 +28,12 @@ echo "[PoC] Cleaning up docker PoC instances"
 docker ps -a --filter name=vulnerable-dependency-update-poc -q | xargs docker rm;
 handle_error $? "0";
 
+echo "[PoC] Building the Go app"
+echo
+docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc go get Main;
+handle_error $? "0";
+echo
+
 echo "[PoC] Running Go program to ensure it runs."
 echo
 docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc go run .;
@@ -42,7 +48,7 @@ echo
 
 ## Run vulncheck
 echo "[PoC] Running vulncheck"
-docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc govulncheck -show verbose . > src/vulncheck.log;
+docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc govulncheck . > src/vulncheck.log;
 handle_error $? "0 3";
 
 NO_VULNS_FOUND=$(fgrep "No vulnerabilities found." src/vulncheck.log);
@@ -61,7 +67,7 @@ python3 scripts/update-vuln-dependencies.py src/go.mod src/vulncheck.log;
 handle_error $? "0";
 echo
 
-echo "[PoC] Deploying dependency update"
+echo "[PoC] Rebuilding with the dependency update"
 echo
 docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc go get Main;
 handle_error $? "0";
