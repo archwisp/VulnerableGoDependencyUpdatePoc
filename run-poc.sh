@@ -24,9 +24,10 @@ handle_error $? "0";
 echo
 
 ## Cleanup the docker environment just in case
-echo "[PoC] Cleaning up docker PoC instances"
+echo "[PoC] Cleaning up PoC artifacts"
 docker ps -a --filter name=vulnerable-dependency-update-poc -q | xargs docker rm;
 handle_error $? "0";
+rm -f ./src/go.sum src/vulncheck.log;
 
 echo "[PoC] Building the Go app"
 echo
