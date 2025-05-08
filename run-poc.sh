@@ -1,8 +1,11 @@
 #!/bin/bash
 
 echo "[PoC] Building Go docker image"
+
 ## Build the container
+echo
 docker build -t archwisp/vulnerable-dependency-update-poc . -q;
+echo
 
 if [ "$?" -ne "0" ]; then
     echo "[PoC] Exiting because last command failed.";
@@ -39,7 +42,9 @@ else
 fi
 
 echo "[PoC] Running Go program to ensure it runs."
+echo
 docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc go run .;
+echo
 
 if [ "$?" -ne "0" ]; then
     echo "[PoC] Exiting because last command failed.";
@@ -47,7 +52,9 @@ if [ "$?" -ne "0" ]; then
 fi
 
 echo "[PoC] Running unit tests to ensure they pass."
+echo
 docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc go test;
+echo
 
 if [ "$?" -ne "0" ]; then
     echo "[PoC] Exiting because last command failed.";
@@ -55,7 +62,9 @@ if [ "$?" -ne "0" ]; then
 fi
 
 echo "[PoC] Updating vulnerable dependency versions"
+echo
 python3 scripts/update-vuln-dependencies.py src/go.mod src/vulncheck.log;
+echo
 
 if [ "$?" -ne "0" ]; then
     echo "[PoC] Exiting because last command failed.";
@@ -63,7 +72,9 @@ if [ "$?" -ne "0" ]; then
 fi
 
 echo "[PoC] Deploying dependency update"
+echo
 docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc go get Main;
+echo
 
 if [ "$?" -ne "0" ]; then
     echo "[PoC] Exiting because last command failed.";
@@ -71,7 +82,9 @@ if [ "$?" -ne "0" ]; then
 fi
 
 echo "[PoC] Running Go program to ensure it still runs."
+echo
 docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc go run .;
+echo
 
 if [ "$?" -ne "0" ]; then
     echo "[PoC] Exiting because last command failed.";
@@ -79,7 +92,9 @@ if [ "$?" -ne "0" ]; then
 fi
 
 echo "[PoC] Running unit tests to ensure they still pass."
+echo
 docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwisp/vulnerable-dependency-update-poc go test;
+echo
 
 if [ "$?" -ne "0" ]; then
     echo "[PoC] Exiting because last command failed.";
