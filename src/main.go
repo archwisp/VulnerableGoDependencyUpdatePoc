@@ -29,4 +29,20 @@ func main() {
 	} else {
 		fmt.Println(message)
 	}
+	
+	message, err = Hello("Bob", "es")
+    
+	if err != nil {
+		fmt.Printf("Error occurred: %s\n", err)
+	} else {
+		fmt.Println(message)
+	}
+	
+	message, err = Hello("Bob", "ru")
+    
+	if err != nil {
+		fmt.Printf("Error occurred: %s\n", err)
+	} else {
+		fmt.Println(message)
+	}
 }
