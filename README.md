@@ -115,3 +115,6 @@ go: downloading golang.org/x/text v0.3.7
 PASS
 ok      Main    0.002s
 ```
+
+# References
+- https://go.dev/doc/tutorial/govulncheck
