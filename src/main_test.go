@@ -2,29 +2,37 @@ package main
 
 import (
     "testing"
+    // "fmt"
 )
 
 func TestHello(t *testing.T) {
     name := "Alice"
 
-    expected := "Hello, Alice. Welcome!"
+    expected_msg := "Hello, Alice. Welcome!"
     msg, err := Hello(name, "en")
 
-    if msg != expected || err != nil {
-        t.Errorf(`Hello("Alice", "en") = %q, %v, want match for %#q, nil`, msg, err, expected)
+    if msg != expected_msg || err != nil {
+        t.Errorf(`%q, %v = Hello("Alice", "en"), expected %#q, nil`, msg, err, expected_msg)
     }
     
-    expected = "Hola, Alice. Bienvenidos!"
+    expected_msg = "Hola, Alice. Bienvenidos!"
     msg, err = Hello(name, "es")
 
-    if msg != expected || err != nil {
-        t.Errorf(`Hello("Alice", "es") = %q, %v, want match for %#q, nil`, msg, err, expected)
+    if msg != expected_msg || err != nil {
+        t.Errorf(`%q, %v = Hello("Alice", "es"), expected %#q, nil`, msg, err, expected_msg)
     }
     
-    expected = "Привет, Alice. Добро пожаловать!"
+    expected_msg = "Привет, Alice. Добро пожаловать!"
     msg, err = Hello(name, "ru")
 
-    if msg != expected || err != nil {
-        t.Errorf(`Hello("Alice", "ru") = %q, %v, want match for %#q, nil`, msg, err, expected)
+    if msg != expected_msg || err != nil {
+        t.Errorf(`%q, %v = Hello("Alice", "ru"), expected %#q, nil`, msg, err, expected_msg)
+    }
+    
+    expected_msg = ""
+    msg, err = Hello(name, "nope")
+
+    if msg != expected_msg || err == nil  {
+        t.Errorf(`%q, %v = Hello("Alice", "nope"), expected %#q`, msg, err, expected_msg)
     }
 }
