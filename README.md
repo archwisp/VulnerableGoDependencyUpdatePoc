@@ -2,12 +2,25 @@
 
 The goals of this project are:
 
-- Automatically scan a Go codebase for vulnerable dependencies
-- Test deploy the project in a container and verify that it runs and unit tests pass
-- Automatically advance the version number of vulnerable dependencies in the project manifest
-- Re-deploy the project in a container with the new dependency version and verify that it still runs and unit tests still pass
-- If the tests pass, commit the dependency update and trigger a pull request
-- If the tests fail, create a ticket containing failed test outputs
+1. Build a container that will run Go packages
+2. Test deploy the project in the container and verify that it runs and unit tests pass
+3. Automatically scan the codebase for vulnerable dependencies
+4. Automatically advance the version number of vulnerable dependencies in the project manifest
+5. Re-deploy the project in a container with the new dependency version and verify that it still runs and unit tests still pass
+6. If the tests pass, commit the dependency update and trigger a pull request
+7. If the tests fail, create a ticket containing failed test outputs
+
+# Run the PoC
+This shell script runs steps 1-5 on the included code in `./src` and returns the
+exit code of any of the subprocesses. A complete variant would download an
+arbitrary package instead, and be plumbed into whatever ticketing system is
+being used.
+
+```
+./run-poc.sh
+```
+
+# Step-by-step
 
 ## Build the container
 
