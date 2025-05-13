@@ -35,6 +35,8 @@ docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwi
 warning: both GOPATH and GOROOT are the same directory (/usr/local/go); see https://go.dev/wiki/InstallTroubleshooting
 go: downloading golang.org/x/text v0.3.5
 Hello, Bob. Welcome!
+Hola, Bob. Bienvenidos!
+Привет, Bob. Добро пожаловать!
 ```
 
 ## Run unit tests
@@ -104,6 +106,8 @@ docker run --rm -it --name vulnerable-dependency-update-poc -v ./src:/src archwi
 warning: both GOPATH and GOROOT are the same directory (/usr/local/go); see https://go.dev/wiki/InstallTroubleshooting
 go: downloading golang.org/x/text v0.3.7
 Hello, Bob. Welcome!
+Hola, Bob. Bienvenidos!
+Привет, Bob. Добро пожаловать!
 ```
 
 ## Make sure unit tests still pass
